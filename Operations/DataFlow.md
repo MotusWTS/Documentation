@@ -28,36 +28,48 @@ For the purpose of data flow, there  are currently 2 types of tag encoding (CTT'
 
 1. NanoTags on Lotek CVX, with DTA file manually uploaded to motus.org
 
-- File processed by find_tags on sgdata, then imported into motus.org
+- File processed by find_tags on sgdata
+- NanoTag data imported from sgdata API into motus.org (*SGDataImport2*)
 
 2. NanoTags on SensorGnome, manually uploaded to motus.org
 
-- File processed by find_tags on sgdata, then imported into motus.org
+- File processed by find_tags on sgdata
+- NanoTag data imported from sgdata API into motus.org (*SGDataImport2*)
 
 3. NanoTags on SensorGnome, sent over SSH to sensorgnome
 
-- File sent by sensorgnome.org to sgdata.motus.org
-- File processed by find_tags on sgdata, then imported into motus.org
+- File sent by sensorgnome.org to sgdata.motus.org (how?)
+- File processed by find_tags on sgdata
+- NanoTag data imported from sgdata API into motus.org (*SGDataImport2*)
 
 4. NanoTags on SensorStations, sent to CTT over network
 
-- gz files are uploaded by CTT to AWS folder **ctt/data/** 
-- gz files are downloaded from AWS by BSC and passed to tag_finder for processing (*S3MonitorProc*)
-- gz files are archived on AWS in folder **ctt/processed/**
+- NanoTag gz files are uploaded by CTT to AWS folder **ctt/data/** 
+- NanoTag gz files are downloaded from AWS by BSC and processed by find_tags on sgdata (*S3MonitorProc*)
+- NanoTag gz files are archived on AWS in folder **ctt/processed/**
+- NanoTag data imported from sgdata API into motus.org (*SGDataImport2*)
 
-5. CTT tags on SensorGnome (with CTT dongle) or SensorStations, manually uploaded to motus.org 
+5. CTT tags on SensorGnome (with CTT dongle), manually uploaded to motus.org 
 
-- gz files are read for known dual mode receivers using the older software to extract CTT detections and GPS data (*ReadCTTDataSG2*)
-- gz files containing CTT detections in newer format are intercepted in motusServer and placed in a local folder (*handleNewFiles.R*)
+- gz files for older format are read for known dual mode receivers to extract CTT detections and GPS data and placed in a local folder (*ReadCTTDataSG2*)
+- gz files containing stand-alone CTT detections and GPS in newer SG format are intercepted in motusServer and placed in a local folder (*handleNewFiles.R*)
 - gz files are sent to AWS drive for CTT processing in folder **motus/data/sg/**  (*UploadCTTDataToS3*) 
 - CTT extracts the list of detections matching known tags for Motus users
 - filtered files are sent back to AWS drive for BSC in folder **ctt/tag-data** 
 - filtered files are read from AWS into motus.org (*ReadCTTFiles*)
 - filtered files are archived in AWS in folder **ctt/processed-ctt**
 
-6. CTT tags on SensorStations, sent to CTT over network
+6. CTT tags on SensorStation, manually uploaded to motus.org
 
-- gz files are uploaded by CTT to AWS folder **ctt/tag-data/** 
-- gz files are downloaded from AWS by BSC and imported into motus.org database (*ReadCTTFiles*)
+- CTT files (data, gps and nodes) are intercepted in motusServer and placed in a local folder (*handleNewFiles.R*)
+- CTT files are sent to AWS drive for CTT processing in folder **motus/data/ctt/**  (*UploadCTTDataToS3*) 
+- CTT extracts the list of detections matching known tags for Motus users
+- filtered files are sent back to AWS drive for BSC in folder **ctt/tag-data** 
+- filtered files are read from AWS into motus.org (*ReadCTTFiles*)
+- filtered files are archived in AWS in folder **ctt/processed-ctt**
+
+7. CTT tags on SensorStations, sent to CTT over network
+
+- files are processed/filtered by CTT and uploaded to AWS folder **ctt/tag-data/** 
+- filtered files are read from AWS into motus.org (*ReadCTTFiles*)
 - gz files are archived on AWS in folder **ctt/processed-ctt/**
-
